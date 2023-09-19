@@ -1,1 +1,20 @@
 # qa_python
+# реализованные тесты
+### test_add_new_book_add_two_books
+### test_add_new_book_name_longer_41
+### test_set_book_genre_set_book_fantastic
+### test_set_book_genre_set_unexisted_genre
+### test_get_book_genre_get_unexisted_book
+### test_get_book_genre_get_book_with_no_genre
+### test_get_books_with_specific_genre_get_by_horror
+### test_get_books_with_specific_genre_get_by_unexisted_genre
+### test_get_books_genre_add_book_and_genre
+### test_get_books_genre_get_empty_list
+### test_get_books_for_children_try_adult_books
+### test_get_books_for_children_try_kids_books
+### test_add_book_in_favorites_add_three_books
+### test_add_book_in_favorites_add_same_book_two_times
+### test_delete_book_from_favorites_add_two_delete_one_favourite
+### test_delete_book_from_favorites_delete_non_existed_from_favourite
+### test_get_list_of_favorites_books_add_two_book_get_list
+### test_get_list_of_favorites_books_get_list_without_adding
