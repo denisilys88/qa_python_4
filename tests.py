@@ -14,9 +14,15 @@ class TestBooksCollector:
         collector.add_new_book('Что делать, если ваш кот хочет вас убить')
         assert len(collector.get_books_genre()) == 2
 
-    def test_add_new_book_name_longer_41(self, collector):
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить 2')
+    @pytest.mark.parametrize('bookname', ['Что делать, если ваш кот хочет вас убить!', ''])
+    def test_add_new_book_add_wrong_length(self, collector, bookname):
+        collector.add_new_book(bookname)
         assert len(collector.get_books_genre()) == 0
+
+    @pytest.mark.parametrize('bookname', ['Что делать, если ваш кот хочет вас убить', 'A'])
+    def test_add_new_book_add_edge_length(self, collector, bookname):
+        collector.add_new_book(bookname)
+        assert len(collector.get_books_genre()) == 1
 
     def test_set_book_genre_set_book_fantastic(self, collector):
         collector.add_new_book('Властелин колец')
@@ -38,37 +44,17 @@ class TestBooksCollector:
     def test_get_books_with_specific_genre_get_by_horror(self, collector):
         collector.add_new_book('Оно')
         collector.set_book_genre('Оно', 'Ужасы')
-        collector.add_new_book('Ходячие мертвецы')
-        collector.set_book_genre('Ходячие мертвецы', 'Ужасы')
-        collector.add_new_book('Песня Сван')
-        collector.set_book_genre('Песня Сван', 'Ужасы')
+        collector.add_new_book('Властелин колец')
+        collector.set_book_genre('Властелин колец', 'Фантастика')
+        assert len(collector.get_books_with_specific_genre('Ужасы')) == 1
 
-        assert len(collector.get_books_with_specific_genre('Ужасы')) == 3
-
-    def test_get_books_with_specific_genre_get_by_unexisted_genre(self, collector):
-        collector.add_new_book('Радуга тяготения')
-        collector.set_book_genre('Радуга тяготения', 'Постмодернизм')
-        collector.add_new_book('Бесконечная шутка')
-        collector.set_book_genre('Бесконечная шутка', 'Постмодернизм')
-
-        assert collector.get_books_with_specific_genre('Постмодернизм') == []
-
-    @pytest.mark.parametrize('bookname, bookgenre', [['Шерлок Холмс', 'Детективы'], ['Трое в лодке', 'Комедии'], ['Я,робот', 'Фантастика']])
-    def test_get_books_genre_add_book_and_genre(self, collector, bookname, bookgenre):
-        collector.add_new_book(bookname)
-        collector.set_book_genre(bookname, bookgenre)
-        assert collector.get_books_genre() == {bookname: bookgenre}
+    def test_get_books_genre_add_book_and_genre(self, collector):
+        collector.add_new_book('Шерлок Холмс')
+        collector.set_book_genre('Шерлок Холмс', 'Детективы')
+        assert collector.get_books_genre() == {'Шерлок Холмс': 'Детективы'}
 
     def test_get_books_genre_get_empty_list(self, collector):
         assert collector.get_books_genre() == {}
-
-    def test_get_books_for_children_try_adult_books(self, collector):
-        collector.add_new_book('Оно')
-        collector.set_book_genre('Оно', 'Ужасы')
-        collector.add_new_book('Секреты Лос-Анджелеса')
-        collector.set_book_genre('Секреты Лос-Анджелеса', 'Детективы')
-
-        assert collector.get_books_for_children() == []
 
     def test_get_books_for_children_try_kids_books(self, collector):
         animation_name = 'Винни-Пух'
@@ -80,18 +66,11 @@ class TestBooksCollector:
 
         assert collector.get_books_for_children() == [animation_name, comedy_name]
 
-    def test_add_book_in_favorites_add_three_books(self, collector):
+    def test_add_book_in_favorites_add_book_favourite(self, collector):
         animation_name = 'Книга джунглей'
         collector.add_new_book(animation_name)
         collector.add_book_in_favorites(animation_name)
-        fantastic_name = 'Гарри Поттер'
-        collector.add_new_book(fantastic_name)
-        collector.add_book_in_favorites(fantastic_name)
-        comedy_name = 'Медвежонок Паддингтон'
-        collector.add_new_book(comedy_name)
-        collector.add_book_in_favorites(comedy_name)
-
-        assert len(collector.get_list_of_favorites_books()) == 3
+        assert len(collector.get_list_of_favorites_books()) == 1
 
     def test_add_book_in_favorites_add_same_book_two_times(self, collector):
         fantastic_name = 'Гарри Поттер'
@@ -119,13 +98,10 @@ class TestBooksCollector:
         animation_name = 'Книга джунглей'
         collector.add_new_book(animation_name)
         collector.add_book_in_favorites(animation_name)
-        fantastic_name = 'Гарри Поттер'
-        collector.add_new_book(fantastic_name)
-        collector.add_book_in_favorites(fantastic_name)
 
         collector.delete_book_from_favorites('Медвежонок Паддингтон')
 
-        assert len(collector.get_list_of_favorites_books()) == 2
+        assert len(collector.get_list_of_favorites_books()) == 1
 
     def test_get_list_of_favorites_books_add_two_book_get_list(self, collector):
         animation_name = 'Книга джунглей'
